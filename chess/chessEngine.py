@@ -2,7 +2,6 @@
 stores all current state info as well as legal move calculations and move logs
 """
 
-
 class GameSate():
     def __init__(self):
 
