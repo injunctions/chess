@@ -70,7 +70,6 @@ def main():
             elif e.type == p.MOUSEBUTTONDOWN:
                 # Get the location of the click
                 location = p.mouse.get_pos()
-
                 # Calculate the column and row of the square clicked
                 col = location[0] // squareSize
                 row = location[1] // squareSize
