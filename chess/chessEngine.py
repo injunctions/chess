@@ -18,27 +18,46 @@ class GameSate():
         self.whiteToMove = True
         self.moveLog = []
 
+    # function that takes the players inputted move and relays this change to the board
+
     def makeMove(self, move):
+
+        # removes the piece moved from the board
         self.board[move.startRow][move.startCol] = "--"
+
+        # places the piece moved onto the new square
         self.board[move.endRow][move.endCol] = move.pieceMoved
+
+        # logs the move made
         self.moveLog.append(move)
+
+        # flips the players turns
         self.whiteToMove = not self.whiteToMove
 
+    # function for undoing the players last move
+
     def undoMove(self):
+
+        # checks that a move has actually been made
         if len(self.moveLog) != 0:
+
+            # gets the last move from the move log
             move = self.moveLog.pop()
+
             self.board[move.startRow][move.startCol] = move.pieceMoved
             self.board[move.endRow][move.endCol] = move.pieceCaptured
+
+            # flips players turn
             self.whiteToMove = not self.whiteToMove
 
-
-
     def getValidMovies(self):
-        return  self.getPossibleMoves()
-
-
+        # TODO: get valid moves
+        return self.getPossibleMoves()
 
     def getPossibleMoves(self):
+
+        # UNFINISHED
+
         moves = []
         for r in range(len(self.board)):
             for c in range(len(self.board[r])):
@@ -46,7 +65,7 @@ class GameSate():
                 if (turn == "w" and self.whiteToMove) and (turn == "b" and not self.whiteToMove):
                     piece = self.board[r][c][1]
                     if piece == "B":
-                        self. getBishopMoves(r, c, moves)
+                        self.getBishopMoves(r, c, moves)
                     elif piece == "K":
                         self.getKingMoves(r, c, moves)
                     elif piece == "N":
@@ -77,12 +96,6 @@ class GameSate():
         pass
 
 
-
-
-
-
-
-
 class move():
     ranksToRows = {"1": 7, "2": 6, "3": 5, "4": 4, "5": 3, "6": 2, "7": 1, "8": 0}
     rowsToRanks = {v: k for k, v in ranksToRows.items()}
@@ -91,6 +104,12 @@ class move():
     colsToFiles = {v: k for k, v in filesToCols.items()}
 
     def __init__(self, startSquare, endSquare, board):
+        """
+        Initialize the move object with the start and end square of the move and the current state of the board.
+        :param startSquare: Tuple of ints (row, col) representing the starting square of the move
+        :param endSquare: Tuple of ints (row, col) representing the ending square of the move
+        :param board: List of Lists representing the current state of the chess board
+        """
         self.startRow = startSquare[0]
         self.startCol = startSquare[1]
         self.endRow = endSquare[0]
@@ -99,7 +118,16 @@ class move():
         self.pieceCaptured = board[self.endRow][self.endCol]
 
     def getChessNotation(self):
+
+        # Returns basic chess notation of the move
+
         return self.getRankFile(self.startRow, self.startCol) + self.getRankFile(self.endRow, self.endCol)
 
     def getRankFile(self, r, c):
+        """
+        Function that converts the row and col of a square to its rank and file notation
+        :param r: int representing the row of the square
+        :param c: int representing the col of the square
+        :return: string representing the rank and file of the square (ex: 'e2')
+        """
         return self.colsToFiles[c] + self.rowsToRanks[r]
