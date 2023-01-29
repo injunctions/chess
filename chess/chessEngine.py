@@ -15,6 +15,9 @@ class GameSate():
             ["--", "--", "--", "bP", "--", "--", "--", "--"],
             ["wP", "wP", "wP", "wP", "wP", "wP", "wP", "wP"],
             ["wR", "wN", "wB", "wQ", "wK", "wB", "wN", "wR"]]
+
+        self.moveFunctions = {'B': self.getBishopMoves,'K': self.getKingMoves, 'N': self.getKnightMoves,
+                              'P': self.getPawnMoves, 'Q': self.getQueenMoves,'R': self.getRookMoves}
         self.whiteToMove = True
         self.moveLog = []
 
@@ -60,18 +63,7 @@ class GameSate():
                 turn = self.board[r][c][0]
                 if (turn == "w" and self.whiteToMove) or (turn == "b" and not self.whiteToMove):
                     piece = self.board[r][c][1]
-                    if piece == "B":
-                        self.getBishopMoves(r, c, moves)
-                    elif piece == "K":
-                        self.getKingMoves(r, c, moves)
-                    elif piece == "N":
-                        self.getKnightMoves(r, c, moves)
-                    elif piece == "P":
-                        self.getPawnMoves(r, c, moves)
-                    elif piece == "Q":
-                        self.getQueenMoves(r, c, moves)
-                    elif piece == "R":
-                        self.getRookMoves(r, c, moves)
+                    self.moveFunctions[piece](r, c, moves) # Calls move function for piece type
         return moves
 
     def getBishopMoves(self, r, c, moves):
