@@ -9,9 +9,9 @@ class GameSate():
             # board displayed as arrays
             ["bR", "bN", "bB", "bQ", "bK", "bB", "bN", "bR"],
             ["bP", "bP", "bP", "bP", "bP", "bP", "bP", "bP"],
-            ["--", "--", "--", "--", "wP", "--", "--", "--"],
-            ["--", "--", "bB", "--", "--", "--", "--", "--"],
-            ["--", "--", "--", "--", "wB", "--", "--", "--"],
+            ["--", "bK", "--", "--", "wP", "--", "--", "--"],
+            ["--", "--", "bB", "--", "--", "--", "--", "bQ"],
+            ["wQ", "--", "--", "--", "wB", "--", "wK", "--"],
             ["--", "--", "--", "bP", "--", "--", "--", "--"],
             ["wP", "wP", "wP", "wP", "wP", "wP", "wP", "wP"],
             ["wR", "wN", "wB", "wQ", "wK", "wB", "wN", "wR"]]
@@ -87,7 +87,22 @@ class GameSate():
                     break
 
     def getKingMoves(self, r, c, moves):
-        pass
+        directions = ((-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)) # Can move to any square around the piece
+        enemyColour = "b" if self.whiteToMove else "w"
+        for e in range(8):
+            endRow = r + directions[e][0]
+            endCol = c + directions[e][1]
+            if 0 <= endRow <8 and 0 <= endCol <8:
+                endPiece = self.board[endRow][endCol]
+                if endPiece == "--":  # Checks for a valid empty space for the piece to move into
+                    moves.append(move((r, c), (endRow, endCol), self.board))
+                elif endPiece[0] == enemyColour:  # Checks for a valid enemy piece to take
+                    moves.append(move((r, c), (endRow, endCol), self.board))
+                    break
+                else:  # Friendly piece in the way
+                    break
+            else:  # Move is off the board
+                break
 
     def getKnightMoves(self, r, c, moves):
         directions = ((-2, -1), (-2, 1), (-1, -2), (-1, 2), (1, -2), (1, 2), (2, -1),
