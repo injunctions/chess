@@ -145,7 +145,9 @@ class GameSate():
                     moves.append(move((r, c), (r + 1, c + 1), self.board))  # Capture to the right
 
     def getQueenMoves(self, r, c, moves):
-        pass
+        # Abstraction of Rook and Bishop moves to save time
+        self.getRookMoves(r, c, moves)
+        self.getBishopMoves(r, c, moves)
 
     def getRookMoves(self, r, c, moves):
         directions = ((-1, 0), (0, -1), (1, 0), (0, 1))  # Holds directions for up, left, down and right
