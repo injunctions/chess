@@ -16,8 +16,8 @@ class GameSate():
             ["wP", "wP", "wP", "wP", "wP", "wP", "wP", "wP"],
             ["wR", "wN", "wB", "wQ", "wK", "wB", "wN", "wR"]]
 
-        self.moveFunctions = {'B': self.getBishopMoves,'K': self.getKingMoves, 'N': self.getKnightMoves,
-                              'P': self.getPawnMoves, 'Q': self.getQueenMoves,'R': self.getRookMoves}
+        self.moveFunctions = {'B': self.getBishopMoves, 'K': self.getKingMoves, 'N': self.getKnightMoves,
+                              'P': self.getPawnMoves, 'Q': self.getQueenMoves, 'R': self.getRookMoves}
         self.whiteToMove = True
         self.moveLog = []
 
@@ -63,11 +63,12 @@ class GameSate():
                 turn = self.board[r][c][0]
                 if (turn == "w" and self.whiteToMove) or (turn == "b" and not self.whiteToMove):
                     piece = self.board[r][c][1]
-                    self.moveFunctions[piece](r, c, moves) # Calls move function for piece type
+                    self.moveFunctions[piece](r, c, moves)  # Calls move function for piece type
         return moves
 
     def getBishopMoves(self, r, c, moves):
-        directions = ((-1, -1), (-1, 1), (1, -1), (1, 1))  # Holds directions for diagonal up and left, up and right, down and left, down and right
+        directions = ((-1, -1), (-1, 1), (1, -1),
+                      (1, 1))  # Holds directions for diagonal up and left, up and right, down and left, down and right
         enemyColour = "b" if self.whiteToMove else "w"
         for d in directions:  # Checks through each of the directions defined above
             for e in range(1, 8):  # Checks through values one to seven
@@ -89,7 +90,16 @@ class GameSate():
         pass
 
     def getKnightMoves(self, r, c, moves):
-        pass
+        directions = ((-2, -1), (-2, 1), (-1, -2), (-1, 2), (1, -2), (1, 2), (2, -1),
+                      (2, 1))  # Tuple of all possible directions the piece can move
+        enemyColour = "b" if self.whiteToMove else "w"  # Checks for enemy colour for takes
+        for d in directions:
+            endRow = r + d[0]
+            endCol = c + d[1]
+            if 0 <= endRow < 8 and 0 <= endCol < 8:
+                endPiece = self.board[endRow][endCol]
+                if endPiece[0] == enemyColour or "--": # Checks for either a piece to take or empty square to move into
+                    moves.append(move((r, c), (endRow, endCol), self.board)) # Makes move
 
     def getPawnMoves(self, r, c, moves):
         if self.whiteToMove:  # Checks if it's a white pawn
@@ -97,51 +107,49 @@ class GameSate():
             # two in front is empty, if so add that as a move
             if self.board[r - 1][c] == "--":  # One square pawn move
                 moves.append(move((r, c), (r - 1, c), self.board))
-                if r == 6 and self.board[r - 2][c] == "--": # Two square pawn move
+                if r == 6 and self.board[r - 2][c] == "--":  # Two square pawn move
                     moves.append(move((r, c), (r - 2, c), self.board))
-            if c - 1 >= 0: # Makes sure pieces cannot move off the left side of the board
-                if self.board[r - 1][c - 1][0] == 'b': # Checks for black piece to capture
+            if c - 1 >= 0:  # Makes sure pieces cannot move off the left side of the board
+                if self.board[r - 1][c - 1][0] == 'b':  # Checks for black piece to capture
                     moves.append(move((r, c), (r - 1, c - 1), self.board))
-            if c + 1 <= 7: # Makes sure pieces cannot move off the right side of the board
-                if self.board[r - 1][c + 1][0] == 'b': # Checks for black piece to capture
+            if c + 1 <= 7:  # Makes sure pieces cannot move off the right side of the board
+                if self.board[r - 1][c + 1][0] == 'b':  # Checks for black piece to capture
                     moves.append(move((r, c), (r - 1, c + 1), self.board))
 
 
-        else: # Black Pawn moves
+        else:  # Black Pawn moves
             if self.board[r + 1][c] == "--":  # One square pawn move
                 moves.append(move((r, c), (r + 1, c), self.board))
-                if r == 1 and self.board[r + 2][c] == "--": # Two square pawn move
+                if r == 1 and self.board[r + 2][c] == "--":  # Two square pawn move
                     moves.append(move((r, c), (r + 2, c), self.board))
-            if c - 1 >= 0: # Makes sure pieces cannot move off the left side of the board
-                if self.board[r + 1][c - 1][0] == 'w': # Checks for white piece to capture
-                    moves.append(move((r, c), (r + 1, c - 1), self.board)) # Capture to the left
-            if c + 1 <= 7: # Makes sure pieces cannot move off the right side of the board
-                if self.board[r + 1][c + 1][0] == 'w': # Checks for white piece to capture
-                    moves.append(move((r, c), (r + 1, c + 1), self.board)) # Capture to the right
+            if c - 1 >= 0:  # Makes sure pieces cannot move off the left side of the board
+                if self.board[r + 1][c - 1][0] == 'w':  # Checks for white piece to capture
+                    moves.append(move((r, c), (r + 1, c - 1), self.board))  # Capture to the left
+            if c + 1 <= 7:  # Makes sure pieces cannot move off the right side of the board
+                if self.board[r + 1][c + 1][0] == 'w':  # Checks for white piece to capture
+                    moves.append(move((r, c), (r + 1, c + 1), self.board))  # Capture to the right
 
     def getQueenMoves(self, r, c, moves):
         pass
 
     def getRookMoves(self, r, c, moves):
-        directions = ((-1, 0), (0, -1), (1, 0), (0, 1)) # Holds directions for up, left, down and right
+        directions = ((-1, 0), (0, -1), (1, 0), (0, 1))  # Holds directions for up, left, down and right
         enemyColour = "b" if self.whiteToMove else "w"
-        for d in directions: # Checks through each of the directions defined above
-            for e in range(1, 8): # Checks through values one to seven
+        for d in directions:  # Checks through each of the directions defined above
+            for e in range(1, 8):  # Checks through values one to seven
                 endRow = r + d[0] * e
-                endCol =c + d[1] * e
-                if 0<= endRow < 8 and 0 <= endCol < 8: # Checks that piece is still on the board
+                endCol = c + d[1] * e
+                if 0 <= endRow < 8 and 0 <= endCol < 8:  # Checks that piece is still on the board
                     endPiece = self.board[endRow][endCol]
-                    if endPiece == "--": # Checks for a valid empty space for the piece to move into
+                    if endPiece == "--":  # Checks for a valid empty space for the piece to move into
                         moves.append(move((r, c), (endRow, endCol), self.board))
-                    elif endPiece[0] == enemyColour: # Checks for a valid enemy piece to take
+                    elif endPiece[0] == enemyColour:  # Checks for a valid enemy piece to take
                         moves.append(move((r, c), (endRow, endCol), self.board))
                         break
-                    else: # Friendly piece in the way
+                    else:  # Friendly piece in the way
                         break
-                else: # Move is off the board
+                else:  # Move is off the board
                     break
-
-
 
 
 class move():
@@ -166,7 +174,6 @@ class move():
         self.pieceMoved = board[self.startRow][self.startCol]
         self.pieceCaptured = board[self.endRow][self.endCol]
         self.moveID = self.startRow * 1000 + self.startCol * 100 + self.endRow * 10 + self.endCol  # Generates unique move id for each possible move made
-
 
     # Overriding the equals method
 
