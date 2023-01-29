@@ -33,32 +33,17 @@ def loadImages():
 
 # Main function that runs the game
 def main():
-    # Initialize pygame library
-    p.init()
-
-    # Create a screen for the game
-    screen = p.display.set_mode((width, height))
-
-    # Create a clock for the game to keep track of time
-    clock = p.time.Clock()
-
-    # Fill the screen with white color
-    screen.fill(p.Color("white"))
-
-    # Create a new instance of the chess engine game state
-    gs = chessEngine.GameSate()
-
-    # Load images of chess pieces into the global dictionary
-    loadImages()
-
-    # Set the game to running
-    running = True
-
-    # Create a variable to store the selected square
-    squareSelected = ()
-
-    # Create a list to store player clicks
-    playerClicks = []
+    p.init()  # Initialize pygame library
+    screen = p.display.set_mode((width, height))  # Create a screen for the game
+    clock = p.time.Clock()  # Create a clock for the game to keep track of time
+    screen.fill(p.Color("white"))  # Fill the screen with white color
+    gs = chessEngine.GameSate()  # Create a new instance of the chess engine game state
+    validMoves = gs.getValidMovies()
+    moveMade = False  # Flag for when a move is made
+    loadImages()  # Load images of chess pieces into the global dictionary
+    running = True  # Set the game to running
+    squareSelected = ()  # Create a variable to store the selected square
+    playerClicks = []    # Create a list to store player clicks
 
     # Game loop
     while running:
@@ -92,9 +77,13 @@ def main():
                     # Print the chess notation of the move
                     print(move.getChessNotation())
 
-                    # Update the game state with the move made
+                    # Checks that the players move is valid
+                    if move in validMoves:
+                        # Update the game state with the move made
+                        gs.makeMove(move)
+                        moveMade = True
 
-                    gs.makeMove(move)
+
 
                     # Deselect the square and clear the player clicks list
                     squareSelected = ()
@@ -105,7 +94,14 @@ def main():
                 if e.key == p.K_u:
                     # Call the undoMove function in the chess engine to undo the last move
                     gs.undoMove()
+                    moveMade = True
                     print("undone")
+
+        if moveMade:
+            validMoves = gs.getValidMovies()
+            moveMade = False
+
+
         # Draw the game state on the screen
         drawGS(screen, gs)
 
@@ -115,27 +111,31 @@ def main():
         # Update the screen with the new game state
         p.display.flip()
 
+
 # Function to draw the game state on the screen
 def drawGS(screen, gs):
-   drawBoardSquares(screen) # Draw the squares on the board
-   drawPieces(screen, gs.board) # Draw the pieces on the squares
+    drawBoardSquares(screen)  # Draw the squares on the board
+    drawPieces(screen, gs.board)  # Draw the pieces on the squares
+
 
 # Function to draw the squares on the board
 def drawBoardSquares(screen):
-   colours = [p.Color("oldlace"), p.Color("sienna")]
-   for r in range(dimension):
-      for c in range(dimension):
-         colour = colours[((r+c)%2)]
-         p.draw.rect(screen, colour, p.Rect(c*squareSize, r*squareSize, squareSize, squareSize))
+    colours = [p.Color("oldlace"), p.Color("sienna")]
+    for r in range(dimension):
+        for c in range(dimension):
+            colour = colours[((r + c) % 2)]
+            p.draw.rect(screen, colour, p.Rect(c * squareSize, r * squareSize, squareSize, squareSize))
+
 
 # Function to draw the pieces on the squares
 def drawPieces(screen, board):
-   for r in range(dimension):
-       for c in range(dimension):
-           piece = board[r][c]
-           if piece != "--":
-               screen.blit(images[piece], p.Rect(c*squareSize, r*squareSize, squareSize, squareSize))
+    for r in range(dimension):
+        for c in range(dimension):
+            piece = board[r][c]
+            if piece != "--":
+                screen.blit(images[piece], p.Rect(c * squareSize, r * squareSize, squareSize, squareSize))
+
 
 # Check if the script is being run as the main file
 if __name__ == "__main__":
-   main()
+    main()

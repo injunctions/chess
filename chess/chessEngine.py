@@ -9,10 +9,10 @@ class GameSate():
             # board displayed as arrays
             ["bR", "bN", "bB", "bQ", "bK", "bB", "bN", "bR"],
             ["bP", "bP", "bP", "bP", "bP", "bP", "bP", "bP"],
+            ["--", "--", "--", "--", "wP", "--", "--", "--"],
             ["--", "--", "--", "--", "--", "--", "--", "--"],
             ["--", "--", "--", "--", "--", "--", "--", "--"],
-            ["--", "--", "--", "--", "--", "--", "--", "--"],
-            ["--", "--", "--", "--", "--", "--", "--", "--"],
+            ["--", "--", "--", "bP", "--", "--", "--", "--"],
             ["wP", "wP", "wP", "wP", "wP", "wP", "wP", "wP"],
             ["wR", "wN", "wB", "wQ", "wK", "wB", "wN", "wR"]]
         self.whiteToMove = True
@@ -40,7 +40,6 @@ class GameSate():
 
         # checks that a move has actually been made
         if len(self.moveLog) != 0:
-
             # gets the last move from the move log
             move = self.moveLog.pop()
 
@@ -55,14 +54,11 @@ class GameSate():
         return self.getPossibleMoves()
 
     def getPossibleMoves(self):
-
-        # UNFINISHED
-
         moves = []
         for r in range(len(self.board)):
             for c in range(len(self.board[r])):
                 turn = self.board[r][c][0]
-                if (turn == "w" and self.whiteToMove) and (turn == "b" and not self.whiteToMove):
+                if (turn == "w" and self.whiteToMove) or (turn == "b" and not self.whiteToMove):
                     piece = self.board[r][c][1]
                     if piece == "B":
                         self.getBishopMoves(r, c, moves)
@@ -76,6 +72,7 @@ class GameSate():
                         self.getQueenMoves(r, c, moves)
                     elif piece == "R":
                         self.getRookMoves(r, c, moves)
+        return moves
 
     def getBishopMoves(self, r, c, moves):
         pass
@@ -87,7 +84,32 @@ class GameSate():
         pass
 
     def getPawnMoves(self, r, c, moves):
-        pass
+        if self.whiteToMove:  # Checks if it's a white pawn
+            # Check if square in front is empty if so add that as a move then check if piece is on row 6 and square
+            # two in front is empty, if so add that as a move
+            if self.board[r - 1][c] == "--":  # One square pawn move
+                moves.append(move((r, c), (r - 1, c), self.board))
+                if r == 6 and self.board[r - 2][c] == "--": # Two square pawn move
+                    moves.append(move((r, c), (r - 2, c), self.board))
+            if c - 1 >= 0: # Makes sure pieces cannot move off the left side of the board
+                if self.board[r - 1][c - 1][0] == 'b': # Checks for black piece to capture
+                    moves.append(move((r, c), (r - 1, c - 1), self.board))
+            if c + 1 <= 7: # Makes sure pieces cannot move off the right side of the board
+                if self.board[r - 1][c + 1][0] == 'b': # Checks for black piece to capture
+                    moves.append(move((r, c), (r - 1, c + 1), self.board))
+
+
+        else: # Black Pawn moves
+            if self.board[r + 1][c] == "--":  # One square pawn move
+                moves.append(move((r, c), (r + 1, c), self.board))
+                if r == 1 and self.board[r + 2][c] == "--": # Two square pawn move
+                    moves.append(move((r, c), (r + 2, c), self.board))
+            if c - 1 >= 0: # Makes sure pieces cannot move off the left side of the board
+                if self.board[r + 1][c - 1][0] == 'w': # Checks for white piece to capture
+                    moves.append(move((r, c), (r + 1, c - 1), self.board))
+            if c + 1 <= 7: # Makes sure pieces cannot move off the right side of the board
+                if self.board[r + 1][c + 1][0] == 'w': # Checks for white piece to capture
+                    moves.append(move((r, c), (r + 1, c + 1), self.board))
 
     def getQueenMoves(self, r, c, moves):
         pass
@@ -109,6 +131,7 @@ class move():
         :param startSquare: Tuple of ints (row, col) representing the starting square of the move
         :param endSquare: Tuple of ints (row, col) representing the ending square of the move
         :param board: List of Lists representing the current state of the chess board
+
         """
         self.startRow = startSquare[0]
         self.startCol = startSquare[1]
@@ -116,9 +139,17 @@ class move():
         self.endCol = endSquare[1]
         self.pieceMoved = board[self.startRow][self.startCol]
         self.pieceCaptured = board[self.endRow][self.endCol]
+        self.moveID = self.startRow * 1000 + self.startCol * 100 + self.endRow * 10 + self.endCol  # Generates unique move id for each possible move made
+
+
+    # Overriding the equals method
+
+    def __eq__(self, other):
+        if isinstance(other, move):
+            return self.moveID == other.moveID
+        return False
 
     def getChessNotation(self):
-
         # Returns basic chess notation of the move
 
         return self.getRankFile(self.startRow, self.startCol) + self.getRankFile(self.endRow, self.endCol)
