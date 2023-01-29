@@ -89,39 +89,40 @@ class GameSate():
     def getKingMoves(self, r, c, moves):
         directions = ((-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)) # Can move to any square around the piece
         enemyColour = "b" if self.whiteToMove else "w"
-        for e in range(8):
-            endRow = r + directions[e][0]
-            endCol = c + directions[e][1]
-            if 0 <= endRow <8 and 0 <= endCol <8:
-                endPiece = self.board[endRow][endCol]
-                if endPiece == "--":  # Checks for a valid empty space for the piece to move into
-                    moves.append(move((r, c), (endRow, endCol), self.board))
-                elif endPiece[0] == enemyColour:  # Checks for a valid enemy piece to take
-                    moves.append(move((r, c), (endRow, endCol), self.board))
+        for d in directions:
+            for e in range(1, 8):
+                endRow = r + d[0] * e
+                endCol = c + d[1] * e
+                if 0 <= endRow <8 and 0 <= endCol <8:
+                    endPiece = self.board[endRow][endCol]
+                    if endPiece == "--":  # Checks for a valid empty space for the piece to move into
+                        moves.append(move((r, c), (endRow, endCol), self.board))
+                    elif endPiece[0] == enemyColour:  # Checks for a valid enemy piece to take
+                        moves.append(move((r, c), (endRow, endCol), self.board))
+                        break
+                    else:  # Friendly piece in the way
+                        break
+                else:  # Move is off the board
                     break
-                else:  # Friendly piece in the way
-                    break
-            else:  # Move is off the board
-                break
 
     def getKnightMoves(self, r, c, moves):
-        directions = ((-2, -1), (-2, 1), (-1, -2), (-1, 2), (1, -2), (1, 2), (2, -1),
-                      (2, 1))  # Tuple of all possible directions the piece can move
+        directions = ((-2, -1), (-2, 1), (-1, -2), (-1, 2), (1, -2), (1, 2), (2, -1), (2, 1))  # Tuple of all possible directions the piece can move
         enemyColour = "b" if self.whiteToMove else "w"  # Checks for enemy colour for takes
         for d in directions:
-            endRow = r + d[0]
-            endCol = c + d[1]
-            if 0 <= endRow < 8 and 0 <= endCol < 8:
-                endPiece = self.board[endRow][endCol]
-                if endPiece == "--":  # Checks for a valid empty space for the piece to move into
-                    moves.append(move((r, c), (endRow, endCol), self.board))
-                elif endPiece[0] == enemyColour:  # Checks for a valid enemy piece to take
-                    moves.append(move((r, c), (endRow, endCol), self.board))
+            for e in range(1, 8):
+                endRow = r + d[0] * e
+                endCol = c + d[1] * e
+                if 0 <= endRow < 8 and 0 <= endCol < 8:
+                    endPiece = self.board[endRow][endCol]
+                    if endPiece == "--":  # Checks for a valid empty space for the piece to move into
+                        moves.append(move((r, c), (endRow, endCol), self.board))
+                    elif endPiece[0] == enemyColour:  # Checks for a valid enemy piece to take
+                        moves.append(move((r, c), (endRow, endCol), self.board))
+                        break
+                    else:  # Friendly piece in the way
+                        break
+                else:  # Move is off the board
                     break
-                else:  # Friendly piece in the way
-                    break
-            else:  # Move is off the board
-                break
 
     def getPawnMoves(self, r, c, moves):
         if self.whiteToMove:  # Checks if it's a white pawn
