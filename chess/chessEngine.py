@@ -10,8 +10,8 @@ class GameSate():
             ["bR", "bN", "bB", "bQ", "bK", "bB", "bN", "bR"],
             ["bP", "bP", "bP", "bP", "bP", "bP", "bP", "bP"],
             ["--", "--", "--", "--", "wP", "--", "--", "--"],
-            ["--", "--", "--", "--", "--", "--", "--", "--"],
-            ["--", "--", "--", "--", "--", "--", "--", "--"],
+            ["--", "--", "bB", "--", "--", "--", "--", "--"],
+            ["--", "--", "--", "--", "wB", "--", "--", "--"],
             ["--", "--", "--", "bP", "--", "--", "--", "--"],
             ["wP", "wP", "wP", "wP", "wP", "wP", "wP", "wP"],
             ["wR", "wN", "wB", "wQ", "wK", "wB", "wN", "wR"]]
@@ -67,7 +67,23 @@ class GameSate():
         return moves
 
     def getBishopMoves(self, r, c, moves):
-        pass
+        directions = ((-1, -1), (-1, 1), (1, -1), (1, 1))  # Holds directions for diagonal up and left, up and right, down and left, down and right
+        enemyColour = "b" if self.whiteToMove else "w"
+        for d in directions:  # Checks through each of the directions defined above
+            for e in range(1, 8):  # Checks through values one to seven
+                endRow = r + d[0] * e
+                endCol = c + d[1] * e
+                if 0 <= endRow < 8 and 0 <= endCol < 8:  # Checks that piece is still on the board
+                    endPiece = self.board[endRow][endCol]
+                    if endPiece == "--":  # Checks for a valid empty space for the piece to move into
+                        moves.append(move((r, c), (endRow, endCol), self.board))
+                    elif endPiece[0] == enemyColour:  # Checks for a valid enemy piece to take
+                        moves.append(move((r, c), (endRow, endCol), self.board))
+                        break
+                    else:  # Friendly piece in the way
+                        break
+                else:  # Move is off the board
+                    break
 
     def getKingMoves(self, r, c, moves):
         pass
