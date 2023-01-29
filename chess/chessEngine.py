@@ -113,8 +113,15 @@ class GameSate():
             endCol = c + d[1]
             if 0 <= endRow < 8 and 0 <= endCol < 8:
                 endPiece = self.board[endRow][endCol]
-                if endPiece[0] == enemyColour or "--": # Checks for either a piece to take or empty square to move into
-                    moves.append(move((r, c), (endRow, endCol), self.board)) # Makes move
+                if endPiece == "--":  # Checks for a valid empty space for the piece to move into
+                    moves.append(move((r, c), (endRow, endCol), self.board))
+                elif endPiece[0] == enemyColour:  # Checks for a valid enemy piece to take
+                    moves.append(move((r, c), (endRow, endCol), self.board))
+                    break
+                else:  # Friendly piece in the way
+                    break
+            else:  # Move is off the board
+                break
 
     def getPawnMoves(self, r, c, moves):
         if self.whiteToMove:  # Checks if it's a white pawn
