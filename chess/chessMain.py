@@ -82,14 +82,13 @@ def main():
                         # Update the game state with the move made
                         gs.makeMove(move)
                         moveMade = True
+                        # Deselect the square and clear the player clicks list
+                        squareSelected = ()
+                        playerClicks = []
+                    else:
+                        playerClicks = [squareSelected]
 
-
-
-                    # Deselect the square and clear the player clicks list
-                    squareSelected = ()
-                    playerClicks = []
-                # Check if the player has pressed the 'u' key (to undo a move)
-
+            # Check if the player has pressed the 'u' key (to undo a move)
             elif e.type == p.KEYDOWN:
                 if e.key == p.K_u:
                     # Call the undoMove function in the chess engine to undo the last move
