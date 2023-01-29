@@ -77,7 +77,7 @@ class GameSate():
 
     def getPawnMoves(self, r, c, moves):
         if self.whiteToMove:  # Checks if it's a white pawn
-            # Check if square in front is empty if so add that as a move then check if piece is on row 6 and square
+            # Check if square in front is empty if so add that as a move then check if piece is on row 6 or 2 and square
             # two in front is empty, if so add that as a move
             if self.board[r - 1][c] == "--":  # One square pawn move
                 moves.append(move((r, c), (r - 1, c), self.board))
@@ -98,16 +98,34 @@ class GameSate():
                     moves.append(move((r, c), (r + 2, c), self.board))
             if c - 1 >= 0: # Makes sure pieces cannot move off the left side of the board
                 if self.board[r + 1][c - 1][0] == 'w': # Checks for white piece to capture
-                    moves.append(move((r, c), (r + 1, c - 1), self.board))
+                    moves.append(move((r, c), (r + 1, c - 1), self.board)) # Capture to the left
             if c + 1 <= 7: # Makes sure pieces cannot move off the right side of the board
                 if self.board[r + 1][c + 1][0] == 'w': # Checks for white piece to capture
-                    moves.append(move((r, c), (r + 1, c + 1), self.board))
+                    moves.append(move((r, c), (r + 1, c + 1), self.board)) # Capture to the right
 
     def getQueenMoves(self, r, c, moves):
         pass
 
     def getRookMoves(self, r, c, moves):
-        pass
+        directions = ((-1, 0), (0, -1), (1, 0), (0, 1)) # Holds directions for up, left, down and right
+        enemyColour = "b" if self.whiteToMove else "w"
+        for d in directions: # Checks through each of the directions defined above
+            for e in range(1, 8): # Checks through values one to seven
+                endRow = r + d[0] * e
+                endCol =c + d[1] * e
+                if 0<= endRow < 8 and 0 <= endCol < 8: # Checks that piece is still on the board
+                    endPiece = self.board[endRow][endCol]
+                    if endPiece == "--": # Checks for a valid empty space for the piece to move into
+                        moves.append(move((r, c), (endRow, endCol), self.board))
+                    elif endPiece[0] == enemyColour: # Checks for a valid enemy piece to take
+                        moves.append(move((r, c), (endRow, endCol), self.board))
+                        break
+                    else: # Friendly piece in the way
+                        break
+                else: # Move is off the board
+                    break
+
+
 
 
 class move():
