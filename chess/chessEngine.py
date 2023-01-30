@@ -20,6 +20,8 @@ class GameSate():
                               'P': self.getPawnMoves, 'Q': self.getQueenMoves, 'R': self.getRookMoves}
         self.whiteToMove = True
         self.moveLog = []
+        self.whiteKingLoc = (7, 4)
+        self.blackKingLoc = (0, 4)
 
     # function that takes the players inputted move and relays this change to the board
 
@@ -34,8 +36,16 @@ class GameSate():
         # logs the move made
         self.moveLog.append(move)
 
+        # Update kings location if moved
+
+        if move.pieceMoved == "wK":
+            self.whiteKingLoc = (move.endRow, move.endCol)
+        elif move.pieceMoved == "bK":
+            self.blackKingLoc = (move.endRow, move.endCol)
         # flips the players turns
         self.whiteToMove = not self.whiteToMove
+
+
 
     # function for undoing the players last move
 
@@ -48,7 +58,11 @@ class GameSate():
 
             self.board[move.startRow][move.startCol] = move.pieceMoved
             self.board[move.endRow][move.endCol] = move.pieceCaptured
-
+            # Update Kings location after move is undone
+            if move.pieceMoved == "wK":
+                self.whiteKingLoc = (move.startRow, move.startCol)
+            elif move.pieceMoved == "bK":
+                self.blackKingLoc = (move.startRow, move.startCol)
             # flips players turn
             self.whiteToMove = not self.whiteToMove
 
