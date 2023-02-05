@@ -22,6 +22,8 @@ class GameSate():
         self.moveLog = []
         self.whiteKingLoc = (7, 4)
         self.blackKingLoc = (0, 4)
+        self.checkMate = False
+        self.staleMate = False
 
     # function that takes the players inputted move and relays this change to the board
 
@@ -68,14 +70,25 @@ class GameSate():
 
     def getValidMovies(self):
 
-        moves = self.getPossibleMoves()
-        for i in range(len(moves)-1, -1, -1):
+        moves = self.getPossibleMoves() # Generates all possible moves
+        for i in range(len(moves)-1, -1, -1): # Goes backwards through the list removing each move
             self.makeMove(moves[i])
-            self.whiteToMove = not self.whiteToMove
+            self.whiteToMove = not self.whiteToMove # Generates all the opponents moves and checks if they attack king
             if self.inCheck():
-                moves.remove(moves[i])
+                moves.remove(moves[i]) # If they attack the king the move is not valid
             self.whiteToMove = not self.whiteToMove
             self.undoMove()
+
+        if len(moves) == 0: # Checks for either check mate or stalemate
+            if self.inCheck():
+                self.checkMate = True
+                print("Check Mate")
+            else:
+                self.staleMate = True
+                print("Stalemate")
+        else:
+            self.checkMate = False
+            self.staleMate = False
 
         return moves
 
@@ -92,8 +105,7 @@ class GameSate():
         oppMoves = self.getPossibleMoves()
         self.whiteToMove = not self.whiteToMove
         for move in oppMoves:
-            if move.endRow == r and move.endCol == c:
-                self.whiteToMove = not self.whiteToMove
+            if move.endRow == r and move.endCol == c: # Checks that the square is under attack
                 return True
         return False
 
