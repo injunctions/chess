@@ -8,10 +8,10 @@ class GameSate():
         self.board = [
             # board displayed as arrays
             ["bR", "bN", "bB", "bQ", "bK", "bB", "bN", "bR"],
-            ["bP", "bP", "bP", "bP", "--", "bP", "bP", "bP"],
+            ["bP", "bP", "bP", "bP", "bP", "bP", "bP", "bP"],
             ["--", "--", "--", "--", "--", "--", "--", "--"],
             ["--", "--", "--", "--", "--", "--", "--", "--"],
-            ["--", "--", "--", "--", "wQ", "--", "--", "--"],
+            ["--", "--", "--", "--", "--", "--", "--", "--"],
             ["--", "--", "--", "--", "--", "--", "--", "--"],
             ["wP", "wP", "wP", "wP", "wP", "wP", "wP", "wP"],
             ["wR", "wN", "wB", "wQ", "wK", "wB", "wN", "wR"]]
@@ -161,7 +161,7 @@ class GameSate():
                     break
 
     def getKnightMoves(self, r, c, moves):
-        directions = ((-2, -1), (-2, 1), (-1, -2), (-1, 2), (1, -2), (1, 2), (2, -1), (2, 1))  # Tuple of all possible directions the piece can move
+        directions = ((-2, -1), (-2, 1), (-1, -2), (-1, 2), (1, -2), (1, 2), (2, -1), (2, 1))  # Holds all of the possible directions the piece can move
         enemyColour = "b" if self.whiteToMove else "w"  # Checks for enemy colour for takes
         for d in directions:
             for e in range(1, 8):
