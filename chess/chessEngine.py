@@ -81,11 +81,11 @@ class GameSate():
 
         if len(moves) == 0: # Checks for either check mate or stalemate
             if self.inCheck():
-                self.checkMate = True
                 print("Check Mate")
+                self.checkMate = True
             else:
-                self.staleMate = True
                 print("Stalemate")
+                self.staleMate = True
         else:
             self.checkMate = False
             self.staleMate = False
