@@ -68,7 +68,7 @@ class GameSate():
             # Update Kings location after move is undone
             if move.pieceMoved == "wK":
                 self.whiteKingLoc = (move.startRow, move.startCol)
-            elif move.pieceMoved == "bK":
+            if move.pieceMoved == "bK":
                 self.blackKingLoc = (move.startRow, move.startCol)
 
 
@@ -159,23 +159,15 @@ class GameSate():
                     moves.append(move((r, c), (endRow, endCol), self.board))
 
     def getKnightMoves(self, r, c, moves):
-        directions = ((-2, -1), (-2, 1), (-1, -2), (-1, 2), (1, -2), (1, 2), (2, -1), (2, 1))  # Holds all of the possible directions the piece can move
-        enemyColour = "b" if self.whiteToMove else "w"  # Checks for enemy colour for takes
+        directions = ((-1, -2), (-2, -1), (1, -2), (2, -1), (1, 2), (2, 1), (-1, 2), (-2, 1)) # Holds all of the possible directions the piece can move
+        allyColor = 'w' if self.whiteToMove else 'b'  # Checks for ally square for takes and to prevent self takes
         for d in directions:
-            for e in range(1, 8):
-                endRow = r + d[0] * e
-                endCol = c + d[1] * e
-                if 0 <= endRow < 8 and 0 <= endCol < 8:
-                    endPiece = self.board[endRow][endCol]
-                    if endPiece == "--":  # Checks for a valid empty space for the piece to move into
-                        moves.append(move((r, c), (endRow, endCol), self.board))
-                    elif endPiece[0] == enemyColour:  # Checks for a valid enemy piece to take
-                        moves.append(move((r, c), (endRow, endCol), self.board))
-                        break
-                    else:  # Friendly piece in the way
-                        break
-                else:  # Move is off the board
-                    break
+            endRow = r + d[0]
+            endCol = c + d[1]
+            if endRow >= 0 and endRow < len(self.board) and endCol >= 0 and endCol < len(self.board[endRow]):
+                endPiece = self.board[endRow][endCol]
+                if endPiece[0] != allyColor: # Checks that there is either an enemy piece to take or an empty square
+                    moves.append(move((r, c), (endRow, endCol), self.board))
 
     def getPawnMoves(self, r, c, moves):
         if self.whiteToMove:  # Checks if it's a white pawn
@@ -215,8 +207,8 @@ class GameSate():
         enemyColour = "b" if self.whiteToMove else "w"
         for d in directions:  # Checks through each of the directions defined above
             for e in range(1, 8):  # Checks through values one to seven
-                endRow = r + d[0] * e
-                endCol = c + d[1] * e
+                endRow = r + (d[0] * e)
+                endCol = c + (d[1] * e)
                 if 0 <= endRow < 8 and 0 <= endCol < 8:  # Checks that piece is still on the board
                     endPiece = self.board[endRow][endCol]
                     if endPiece == "--":  # Checks for a valid empty space for the piece to move into
