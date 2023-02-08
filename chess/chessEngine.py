@@ -38,14 +38,17 @@ class GameSate():
         # logs the move made
         self.moveLog.append(move)
 
+        # flips the players turns
+
+        self.whiteToMove = not self.whiteToMove
+
         # Update kings location if moved
 
         if move.pieceMoved == "wK":
             self.whiteKingLoc = (move.endRow, move.endCol)
-        elif move.pieceMoved == "bK":
+        if move.pieceMoved == "bK":
             self.blackKingLoc = (move.endRow, move.endCol)
-        # flips the players turns
-        self.whiteToMove = not self.whiteToMove
+
 
 
 
@@ -60,22 +63,25 @@ class GameSate():
 
             self.board[move.startRow][move.startCol] = move.pieceMoved
             self.board[move.endRow][move.endCol] = move.pieceCaptured
+            # flips players turn
+            self.whiteToMove = not self.whiteToMove
             # Update Kings location after move is undone
             if move.pieceMoved == "wK":
                 self.whiteKingLoc = (move.startRow, move.startCol)
             elif move.pieceMoved == "bK":
                 self.blackKingLoc = (move.startRow, move.startCol)
-            # flips players turn
-            self.whiteToMove = not self.whiteToMove
+
 
     def getValidMovies(self):
 
         moves = self.getPossibleMoves() # Generates all possible moves
         for i in range(len(moves)-1, -1, -1): # Goes backwards through the list removing each move
             self.makeMove(moves[i])
-            self.whiteToMove = not self.whiteToMove # Generates all the opponents moves and checks if they attack king
+            self.whiteToMove = not self.whiteToMove
+             # Generates all the opponents moves and checks if they attack king
             if self.inCheck():
                 moves.remove(moves[i]) # If they attack the king the move is not valid
+
             self.whiteToMove = not self.whiteToMove
             self.undoMove()
 
@@ -127,8 +133,8 @@ class GameSate():
         enemyColour = "b" if self.whiteToMove else "w"
         for d in directions:  # Checks through each of the directions defined above
             for e in range(1, 8):  # Checks through values one to seven
-                endRow = r + d[0] * e
-                endCol = c + d[1] * e
+                endRow = r + (d[0] * e)
+                endCol = c + (d[1] * e)
                 if 0 <= endRow < 8 and 0 <= endCol < 8:  # Checks that piece is still on the board
                     endPiece = self.board[endRow][endCol]
                     if endPiece == "--":  # Checks for a valid empty space for the piece to move into
@@ -142,23 +148,15 @@ class GameSate():
                     break
 
     def getKingMoves(self, r, c, moves):
-        directions = ((-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)) # Can move to any square around the piece
-        enemyColour = "b" if self.whiteToMove else "w"
+        directions = ((-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1))  # Can move to any square around the piece
+        allyColor = 'w' if self.whiteToMove else 'b'  # ally color according to current turn
         for d in directions:
-            for e in range(1, 8):
-                endRow = r + d[0] * e
-                endCol = c + d[1] * e
-                if 0 <= endRow <8 and 0 <= endCol <8:
-                    endPiece = self.board[endRow][endCol]
-                    if endPiece == "--":  # Checks for a valid empty space for the piece to move into
-                        moves.append(move((r, c), (endRow, endCol), self.board))
-                    elif endPiece[0] == enemyColour:  # Checks for a valid enemy piece to take
-                        moves.append(move((r, c), (endRow, endCol), self.board))
-                        break
-                    else:  # Friendly piece in the way
-                        break
-                else:  # Move is off the board
-                    break
+            endRow = r + d[0]
+            endCol = c + d[1]
+            if endRow >= 0 and endRow < len(self.board) and endCol >= 0 and endCol < len(self.board[endRow]):
+                endPiece = self.board[endRow][endCol]
+                if endPiece[0] != allyColor:
+                    moves.append(move((r, c), (endRow, endCol), self.board))
 
     def getKnightMoves(self, r, c, moves):
         directions = ((-2, -1), (-2, 1), (-1, -2), (-1, 2), (1, -2), (1, 2), (2, -1), (2, 1))  # Holds all of the possible directions the piece can move

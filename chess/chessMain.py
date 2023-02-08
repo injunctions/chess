@@ -9,7 +9,7 @@ from chess import chessEngine
 p.init()
 
 # Set the width and height of the game screen
-width = height = 400
+width = height = 480
 
 # Set the maximum frames per second (FPS)
 maxFPS = 15
@@ -69,24 +69,24 @@ def main():
                     squareSelected = (row, col)
                     playerClicks.append(squareSelected)
 
-                # Check if the player has made two clicks (one for starting square, one for ending square)
-                if len(playerClicks) == 2:
-                    # Make a move using the chess engine
-                    move = chessEngine.move(playerClicks[0], playerClicks[1], gs.board)
+                    # Check if the player has made two clicks (one for starting square, one for ending square)
+                    if len(playerClicks) == 2:
+                        # Make a move using the chess engine
+                        move = chessEngine.move(playerClicks[0], playerClicks[1], gs.board)
 
-                    # Print the chess notation of the move
-                    print(move.getChessNotation())
+                        # Print the chess notation of the move
+                        print(move.getChessNotation())
 
-                    # Checks that the players move is valid
-                    if move in validMoves:
-                        # Update the game state with the move made
-                        gs.makeMove(move)
-                        moveMade = True
-                        # Deselect the square and clear the player clicks list
-                        squareSelected = ()
-                        playerClicks = []
-                    else:
-                        playerClicks = [squareSelected]
+                        # Checks that the players move is valid
+                        if move in validMoves:
+                            # Update the game state with the move made
+                            gs.makeMove(move)
+                            moveMade = True
+                            # Deselect the square and clear the player clicks list
+                            squareSelected = ()
+                            playerClicks = []
+                        else:
+                            playerClicks = [squareSelected]
 
             # Check if the player has pressed the 'u' key (to undo a move)
             elif e.type == p.KEYDOWN:
