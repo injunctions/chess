@@ -76,16 +76,16 @@ def main():
 
                         # Print the chess notation of the move
                         print(move.getChessNotation())
-
-                        # Checks that the players move is valid
-                        if move in validMoves:
-                            # Update the game state with the move made
-                            gs.makeMove(move)
-                            moveMade = True
-                            # Deselect the square and clear the player clicks list
-                            squareSelected = ()
-                            playerClicks = []
-                        else:
+                        for e in range(len(validMoves)):
+                            # Checks that the players move is valid
+                            if move == validMoves[e]:
+                                # Update the game state with the move made
+                                gs.makeMove(validMoves[e])
+                                moveMade = True
+                                # Deselect the square and clear the player clicks list
+                                squareSelected = ()
+                                playerClicks = []
+                        if not moveMade:
                             playerClicks = [squareSelected]
 
             # Check if the player has pressed the 'u' key (to undo a move)

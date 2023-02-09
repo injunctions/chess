@@ -49,7 +49,8 @@ class GameSate():
         if move.pieceMoved == "bK":
             self.blackKingLoc = (move.endRow, move.endCol)
 
-
+        if move.pawnPromotion:
+            self.board[move.endRow][move.endCol] = move.pieceMoved[0] + "Q"
 
 
     # function for undoing the players last move
@@ -243,6 +244,9 @@ class move():
         self.endCol = endSquare[1]
         self.pieceMoved = board[self.startRow][self.startCol]
         self.pieceCaptured = board[self.endRow][self.endCol]
+        self.pawnPromotion = False
+        if (self.pieceMoved == "wP" and self.endRow == 0) or (self.pieceMoved == "bP" and self.endRow == 7): # Checks that piece has made it to the other side of the board
+            self.pawnPromotion = True
         self.moveID = self.startRow * 1000 + self.startCol * 100 + self.endRow * 10 + self.endCol  # Generates unique move id for each possible move made
 
     # Overriding the equals method
